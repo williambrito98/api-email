@@ -11,5 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "nodemailer": "^6.9.3"
+  },
+  "devDependencies": {
+    "git-commit-msg-linter": "^5.0.4"
   }
 }
