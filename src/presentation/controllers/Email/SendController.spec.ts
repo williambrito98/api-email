@@ -16,7 +16,7 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.message).toEqual(new Error('Missing param: to'))
+    expect(httpResponse.body.message).toEqual(new Error('Missing param: to'))
   })
 
   test('Should return 400 if no sender is provided', () => {
@@ -36,7 +36,7 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.message).toEqual(new Error('Missing param: from'))
+    expect(httpResponse.body.message).toEqual(new Error('Missing param: from'))
   })
 
   test('Should return 400 if no subject is provided', () => {
@@ -56,7 +56,7 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.message).toEqual(new Error('Missing param: subject'))
+    expect(httpResponse.body.message).toEqual(new Error('Missing param: subject'))
   })
 
   test('Should return 400 if no fields is provided', () => {
@@ -73,7 +73,7 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.message).toEqual(new Error('Missing param: fields'))
+    expect(httpResponse.body.message).toEqual(new Error('Missing param: fields'))
   })
 
   test('Should return 400 if no type_body is provided', () => {
@@ -93,6 +93,6 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.message).toEqual(new Error('Missing param: type_body'))
+    expect(httpResponse.body.message).toEqual(new Error('Missing param: type_body'))
   })
 })
