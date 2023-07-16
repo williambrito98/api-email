@@ -17,8 +17,8 @@ export class SendController implements controller {
       }
     }
 
-    const invalidReceiver = httpRequest.body?.to.find((email: string) => !this.emailValidator.isValid(email))
-    if (invalidReceiver) {
+    const isValidReceiver = this.emailValidator.isValid(httpRequest.body.to)
+    if (!isValidReceiver) {
       return badRequest(new InvalidParamError('to'))
     }
 
