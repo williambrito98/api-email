@@ -1,4 +1,4 @@
-import { badRequest, serverError } from '../../helpers/httpHelpers'
+import { badRequest, serverError, success } from '../../helpers/httpHelpers'
 import { InvalidParamError } from '../../errors/InvalidParamError'
 import { MissingParamError } from '../../errors/MissingParamError'
 import { type SendEmail } from '../../../domain/usecases/sendEmail'
@@ -38,10 +38,7 @@ export class SendController implements controller {
         return badRequest(new SendEmailError())
       }
 
-      return {
-        body: '',
-        statusCode: 200
-      }
+      return success('Email Enviado com Sucesso')
     } catch (error) {
       return serverError()
     }
