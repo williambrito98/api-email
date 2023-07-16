@@ -6,10 +6,17 @@ const config = {
   coverageDirectory: "coverage", 
   coverageProvider: "v8",
   testEnvironment: 'node',
-  collectCoverageFrom: ['<rootDir>/src/**/*.ts'],
+  collectCoverageFrom: [
+    '<rootDir>/src/**/*.ts',
+    '!<rootDir>/src/**/protocols/',
+  ],
   transform: {
     '.+\\.ts$': 'ts-jest'
-  }
+  },
+  testPathIgnorePatterns: [
+    './src/presentation/protocols/',
+    './node_modules/'
+  ]
 };
 
 module.exports = config;

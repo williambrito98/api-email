@@ -1,7 +1,8 @@
 import { badRequest } from '../../../helpers/httpHelpers'
 import { MissingParamError } from '../../errors/MissingParamError'
+import { type controller } from '../../protocols/controller'
 import { type HttpResponse, type HttpRequest } from './../../protocols/http'
-export class SendController {
+export class SendController implements controller {
   handle (httpRequest: HttpRequest): HttpResponse {
     const requiredFields = ['to', 'from', 'subject', 'fields', 'type_body']
     for (const field of requiredFields) {
