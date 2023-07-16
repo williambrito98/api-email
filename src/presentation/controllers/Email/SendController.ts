@@ -1,6 +1,6 @@
 export class SendController {
   handle (httpRequest: any): any {
-    if (!httpRequest.body.to) {
+    if (!httpRequest.body.to?.length) {
       return {
         statusCode: 400,
         message: new Error('Missing param: to')
@@ -13,6 +13,14 @@ export class SendController {
         message: new Error('Missing param: from')
       }
     }
+
+    if (!httpRequest.body.subject) {
+      return {
+        statusCode: 400,
+        message: new Error('Missing param: subject')
+      }
+    }
+
     return {}
   }
 }
