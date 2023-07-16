@@ -1,17 +1,3 @@
-/*
-    {
-        to: string[],
-        from: string,
-        subject: string
-        fields: {
-            variable_1: string
-            variable_2: string
-            ....
-        }
-        type_body: string
-    }
-*/
-
 import { SendController } from './SendController'
 
 describe('Email: Send Controller', () => {
@@ -88,5 +74,25 @@ describe('Email: Send Controller', () => {
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.message).toEqual(new Error('Missing param: fields'))
+  })
+
+  test('Should return 400 if no type_body is provided', () => {
+    const sut = new SendController()
+    const httpRequest = {
+      body: {
+        to: [
+          'email@mail.com'
+        ],
+        subject: 'subject',
+        from: 'email@mail.com',
+        fields: {
+          name: 'name',
+          data: 'data'
+        }
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.message).toEqual(new Error('Missing param: type_body'))
   })
 })
