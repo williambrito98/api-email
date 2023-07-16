@@ -225,4 +225,29 @@ describe('Email: Send Controller', () => {
     sut.handle(httpRequest)
     expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body)
   })
+
+  test('Should return 500 if SendEmail throws', () => {
+    const { sut, sendEmailStub } = makeSut()
+    jest.spyOn(sendEmailStub, 'send').mockImplementationOnce(() => {
+      throw new ServerError()
+    })
+
+    const httpRequest = {
+      body: {
+        to: [
+          'invalid'
+        ],
+        subject: 'subject',
+        from: 'email@mail.com',
+        fields: {
+          name: 'name',
+          data: 'data'
+        },
+        type_body: 'success'
+      }
+    }
+    const httpReesponse = sut.handle(httpRequest)
+    expect(httpReesponse.statusCode).toBe(500)
+    expect(httpReesponse.body).toEqual(new ServerError())
+  })
 })
