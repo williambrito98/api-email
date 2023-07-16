@@ -1,4 +1,4 @@
-import { badRequest, serverError } from '../../../helpers/httpHelpers'
+import { badRequest, serverError } from '../../helpers/httpHelpers'
 import { InvalidParamError } from '../../errors/InvalidParamError'
 import { MissingParamError } from '../../errors/MissingParamError'
 import { type controller } from '../../protocols/controller'
