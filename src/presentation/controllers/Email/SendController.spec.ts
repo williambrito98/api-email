@@ -275,4 +275,25 @@ describe('Email: Send Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new SendEmailError())
   })
+
+  test('Should return 200 if valid values is provided', () => {
+    const { sut } = makeSut()
+    const httpRequest = {
+      body: {
+        to: [
+          'email@mail.com'
+        ],
+        from: 'email@mail.com',
+        subject: 'subject',
+        type_body: 'success',
+        fields: {
+          name: 'name',
+          data: 'data'
+        }
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toBe('Email Enviado com Sucesso')
+  })
 })
