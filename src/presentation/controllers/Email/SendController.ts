@@ -3,6 +3,7 @@ import { InvalidParamError } from '../../errors/InvalidParamError'
 import { MissingParamError } from '../../errors/MissingParamError'
 import { type SendEmail } from '../../../domain/usecases/sendEmail'
 import { type EmailValidator, type HttpRequest, type HttpResponse, type controller } from './emailProtocols'
+import { SendEmailError } from '../../errors/SendEmailError'
 export class SendController implements controller {
   constructor (
     private readonly emailValidator: EmailValidator,
@@ -25,13 +26,17 @@ export class SendController implements controller {
         return badRequest(new InvalidParamError('to'))
       }
 
-      this.sendEmail.send({
+      const isSendEmail = this.sendEmail.send({
         to,
         from,
         subject,
         fields,
         type_body
       })
+
+      if (!isSendEmail) {
+        return badRequest(new SendEmailError())
+      }
 
       return {
         body: '',
