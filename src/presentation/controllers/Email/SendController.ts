@@ -1,10 +1,8 @@
 import { badRequest, serverError } from '../../helpers/httpHelpers'
 import { InvalidParamError } from '../../errors/InvalidParamError'
 import { MissingParamError } from '../../errors/MissingParamError'
-import { type controller } from '../../protocols/controller'
-import { type EmailValidator } from '../../protocols/emailValidator'
-import { type HttpResponse, type HttpRequest } from './../../protocols/http'
 import { type SendEmail } from '../../../domain/usecases/sendEmail'
+import { type EmailValidator, type HttpRequest, type HttpResponse, type controller } from './emailProtocols'
 export class SendController implements controller {
   constructor (
     private readonly emailValidator: EmailValidator,
