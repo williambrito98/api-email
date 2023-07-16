@@ -1,3 +1,4 @@
+import { type SendEmail, type SendEmailModel } from '../../../domain/usecases/sendEmail'
 import { InvalidParamError } from '../../errors/InvalidParamError'
 import { MissingParamError } from '../../errors/MissingParamError'
 import { ServerError } from '../../errors/ServerError'
@@ -7,19 +8,35 @@ import { SendController } from './SendController'
 interface SutTypes {
   sut: SendController
   emailValidatorStub: EmailValidator
+  sendEmailStub: SendEmail
 }
 
-const makeSut = (): SutTypes => {
+const makeEmailValidator = (): EmailValidator => {
   class EmailValidatorStub implements EmailValidator {
     isValid (email: string | string[]): boolean {
       return true
     }
   }
-  const emailValidatorStub = new EmailValidatorStub()
-  const sut = new SendController(emailValidatorStub)
+  return new EmailValidatorStub()
+}
+
+const makeSendEmail = (): SendEmail => {
+  class SendEmailStub implements SendEmail {
+    send (data: SendEmailModel): boolean {
+      return true
+    }
+  }
+  return new SendEmailStub()
+}
+
+const makeSut = (): SutTypes => {
+  const emailValidatorStub = makeEmailValidator()
+  const sendEmailStub = makeSendEmail()
+  const sut = new SendController(emailValidatorStub, sendEmailStub)
   return {
     sut,
-    emailValidatorStub
+    emailValidatorStub,
+    sendEmailStub
   }
 }
 
@@ -185,5 +202,27 @@ describe('Email: Send Controller', () => {
     const httpReesponse = sut.handle(httpRequest)
     expect(httpReesponse.statusCode).toBe(500)
     expect(httpReesponse.body).toEqual(new ServerError())
+  })
+
+  test('Should call SendEmail with correct values', () => {
+    const { sut, sendEmailStub } = makeSut()
+    const isValidSpy = jest.spyOn(sendEmailStub, 'send')
+
+    const httpRequest = {
+      body: {
+        to: [
+          'invalid'
+        ],
+        subject: 'subject',
+        from: 'email@mail.com',
+        fields: {
+          name: 'name',
+          data: 'data'
+        },
+        type_body: 'success'
+      }
+    }
+    sut.handle(httpRequest)
+    expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 })
