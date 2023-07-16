@@ -1,6 +1,7 @@
 import { type SendEmail, type SendEmailModel } from '../../../domain/usecases/sendEmail'
 import { InvalidParamError } from '../../errors/InvalidParamError'
 import { MissingParamError } from '../../errors/MissingParamError'
+import { SendEmailError } from '../../errors/SendEmailError'
 import { ServerError } from '../../errors/ServerError'
 import { type EmailValidator } from '../../protocols/emailValidator'
 import { SendController } from './SendController'
@@ -249,5 +250,29 @@ describe('Email: Send Controller', () => {
     const httpReesponse = sut.handle(httpRequest)
     expect(httpReesponse.statusCode).toBe(500)
     expect(httpReesponse.body).toEqual(new ServerError())
+  })
+
+  test('Should return 400 if SendEmail returns false', () => {
+    const { sut, sendEmailStub } = makeSut()
+    jest.spyOn(sendEmailStub, 'send').mockImplementationOnce(() => {
+      return false
+    })
+    const httpRequest = {
+      body: {
+        to: [
+          'email@mail.com'
+        ],
+        from: 'email@mail.com',
+        subject: 'subject',
+        type_body: 'success',
+        fields: {
+          name: 'name',
+          data: 'data'
+        }
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.body.message).toEqual(new SendEmailError())
   })
 })
