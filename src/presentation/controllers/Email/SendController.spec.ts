@@ -72,4 +72,21 @@ describe('Email: Send Controller', () => {
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.message).toEqual(new Error('Missing param: subject'))
   })
+
+  test('Should return 400 if no fields is provided', () => {
+    const sut = new SendController()
+    const httpRequest = {
+      body: {
+        to: [
+          'email@mail.com'
+        ],
+        subject: 'subject',
+        from: 'email@mail.com',
+        type_body: 'success'
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.message).toEqual(new Error('Missing param: fields'))
+  })
 })
