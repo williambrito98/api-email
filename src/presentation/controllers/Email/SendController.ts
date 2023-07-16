@@ -28,6 +28,13 @@ export class SendController {
       }
     }
 
+    if (!httpRequest.body.type_body) {
+      return {
+        statusCode: 400,
+        message: new Error('Missing param: type_body')
+      }
+    }
+
     return {}
   }
 }
