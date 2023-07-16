@@ -6,6 +6,13 @@ export class SendController {
         message: new Error('Missing param: to')
       }
     }
+
+    if (!httpRequest.body.from) {
+      return {
+        statusCode: 400,
+        message: new Error('Missing param: from')
+      }
+    }
     return {}
   }
 }
