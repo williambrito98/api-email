@@ -37,7 +37,9 @@ describe('Email: Send Controller', () => {
     const sut = new SendController()
     const httpRequest = {
       body: {
-        to: [],
+        to: [
+          'email@mail.com'
+        ],
         subject: 'subject',
         type_body: 'success',
         fields: {
@@ -49,5 +51,25 @@ describe('Email: Send Controller', () => {
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.message).toEqual(new Error('Missing param: from'))
+  })
+
+  test('Should return 400 if no subject is provided', () => {
+    const sut = new SendController()
+    const httpRequest = {
+      body: {
+        to: [
+          'email@mail.com'
+        ],
+        from: 'email@mail.com',
+        type_body: 'success',
+        fields: {
+          name: 'name',
+          data: 'data'
+        }
+      }
+    }
+    const httpResponse = sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(400)
+    expect(httpResponse.message).toEqual(new Error('Missing param: subject'))
   })
 })
