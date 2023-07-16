@@ -1,3 +1,4 @@
+import { MissingParamError } from '../../errors/MissingParamError'
 import { SendController } from './SendController'
 
 describe('Email: Send Controller', () => {
@@ -16,7 +17,7 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body.message).toEqual(new Error('Missing param: to'))
+    expect(httpResponse.body.message).toEqual(new MissingParamError('to'))
   })
 
   test('Should return 400 if no sender is provided', () => {
@@ -36,7 +37,7 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body.message).toEqual(new Error('Missing param: from'))
+    expect(httpResponse.body.message).toEqual(new MissingParamError('from'))
   })
 
   test('Should return 400 if no subject is provided', () => {
@@ -56,7 +57,7 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body.message).toEqual(new Error('Missing param: subject'))
+    expect(httpResponse.body.message).toEqual(new MissingParamError('subject'))
   })
 
   test('Should return 400 if no fields is provided', () => {
@@ -73,7 +74,7 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body.message).toEqual(new Error('Missing param: fields'))
+    expect(httpResponse.body.message).toEqual(new MissingParamError('fields'))
   })
 
   test('Should return 400 if no type_body is provided', () => {
@@ -93,6 +94,6 @@ describe('Email: Send Controller', () => {
     }
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
-    expect(httpResponse.body.message).toEqual(new Error('Missing param: type_body'))
+    expect(httpResponse.body.message).toEqual(new MissingParamError('type_body'))
   })
 })

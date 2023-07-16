@@ -1,3 +1,4 @@
+import { MissingParamError } from '../../errors/MissingParamError'
 import { type HttpResponse, type HttpRequest } from './../../protocols/http'
 export class SendController {
   handle (httpRequest: HttpRequest): HttpResponse {
@@ -5,7 +6,7 @@ export class SendController {
       return {
         statusCode: 400,
         body: {
-          message: new Error('Missing param: to')
+          message: new MissingParamError('to')
         }
       }
     }
@@ -14,7 +15,7 @@ export class SendController {
       return {
         statusCode: 400,
         body: {
-          message: new Error('Missing param: from')
+          message: new MissingParamError('from')
         }
       }
     }
@@ -23,7 +24,7 @@ export class SendController {
       return {
         statusCode: 400,
         body: {
-          message: new Error('Missing param: subject')
+          message: new MissingParamError('subject')
         }
       }
     }
@@ -32,7 +33,7 @@ export class SendController {
       return {
         statusCode: 400,
         body: {
-          message: new Error('Missing param: fields')
+          message: new MissingParamError('fields')
         }
       }
     }
@@ -41,7 +42,7 @@ export class SendController {
       return {
         statusCode: 400,
         body: {
-          message: new Error('Missing param: type_body')
+          message: new MissingParamError('type_body')
         }
       }
     }
