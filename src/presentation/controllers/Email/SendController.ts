@@ -4,9 +4,11 @@ import { MissingParamError } from '../../errors/MissingParamError'
 import { type controller } from '../../protocols/controller'
 import { type EmailValidator } from '../../protocols/emailValidator'
 import { type HttpResponse, type HttpRequest } from './../../protocols/http'
+import { type SendEmail } from '../../../domain/usecases/sendEmail'
 export class SendController implements controller {
   constructor (
-    private readonly emailValidator: EmailValidator
+    private readonly emailValidator: EmailValidator,
+    private readonly sendEmail: SendEmail
   ) {}
 
   handle (httpRequest: HttpRequest): HttpResponse {
@@ -18,10 +20,20 @@ export class SendController implements controller {
         }
       }
 
-      const isValidReceiver = this.emailValidator.isValid(httpRequest.body.to)
+      const { to, from, subject, fields, type_body } = httpRequest.body
+
+      const isValidReceiver = this.emailValidator.isValid(to)
       if (!isValidReceiver) {
         return badRequest(new InvalidParamError('to'))
       }
+
+      this.sendEmail.send({
+        to,
+        from,
+        subject,
+        fields,
+        type_body
+      })
 
       return {
         body: '',
