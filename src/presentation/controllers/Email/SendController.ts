@@ -1,4 +1,4 @@
-import { badRequest } from '../../../helpers/httpHelpers'
+import { badRequest, serverError } from '../../../helpers/httpHelpers'
 import { InvalidParamError } from '../../errors/InvalidParamError'
 import { MissingParamError } from '../../errors/MissingParamError'
 import { type controller } from '../../protocols/controller'
@@ -10,21 +10,25 @@ export class SendController implements controller {
   ) {}
 
   handle (httpRequest: HttpRequest): HttpResponse {
-    const requiredFields = ['to', 'from', 'subject', 'fields', 'type_body']
-    for (const field of requiredFields) {
-      if (!httpRequest.body[field]) {
-        return badRequest(new MissingParamError(field))
+    try {
+      const requiredFields = ['to', 'from', 'subject', 'fields', 'type_body']
+      for (const field of requiredFields) {
+        if (!httpRequest.body[field]) {
+          return badRequest(new MissingParamError(field))
+        }
       }
-    }
 
-    const isValidReceiver = this.emailValidator.isValid(httpRequest.body.to)
-    if (!isValidReceiver) {
-      return badRequest(new InvalidParamError('to'))
-    }
+      const isValidReceiver = this.emailValidator.isValid(httpRequest.body.to)
+      if (!isValidReceiver) {
+        return badRequest(new InvalidParamError('to'))
+      }
 
-    return {
-      body: '',
-      statusCode: 200
+      return {
+        body: '',
+        statusCode: 200
+      }
+    } catch (error) {
+      return serverError()
     }
   }
 }
