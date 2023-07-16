@@ -21,6 +21,13 @@ export class SendController {
       }
     }
 
+    if (!httpRequest.body.fields) {
+      return {
+        statusCode: 400,
+        message: new Error('Missing param: fields')
+      }
+    }
+
     return {}
   }
 }
