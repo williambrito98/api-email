@@ -10,7 +10,7 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   class EmailValidatorStub implements EmailValidator {
-    isValid (email: string): boolean {
+    isValid (email: string | string[]): boolean {
       return true
     }
   }
@@ -137,5 +137,27 @@ describe('Email: Send Controller', () => {
     const httpResponse = sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new InvalidParamError('to'))
+  })
+
+  test('Should call EmailValidator with correct receiver', () => {
+    const { sut, emailValidatorStub } = makeSut()
+    const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
+
+    const httpRequest = {
+      body: {
+        to: [
+          'invalid'
+        ],
+        subject: 'subject',
+        from: 'email@mail.com',
+        fields: {
+          name: 'name',
+          data: 'data'
+        },
+        type_body: 'success'
+      }
+    }
+    sut.handle(httpRequest)
+    expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body.to)
   })
 })
