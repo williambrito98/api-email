@@ -23,7 +23,7 @@ const makeEmailValidator = (): EmailValidator => {
 
 const makeSendEmail = (): SendEmail => {
   class SendEmailStub implements SendEmail {
-    send (data: SendEmailModel): boolean {
+    async send (data: SendEmailModel): Promise<boolean> {
       return true
     }
   }
@@ -42,7 +42,7 @@ const makeSut = (): SutTypes => {
 }
 
 describe('Email: Send Controller', () => {
-  test('Should return 400 if no receiver is provided', () => {
+  test('Should return 400 if no receiver is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -55,12 +55,12 @@ describe('Email: Send Controller', () => {
         }
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new MissingParamError('to'))
   })
 
-  test('Should return 400 if no sender is provided', () => {
+  test('Should return 400 if no sender is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -75,12 +75,12 @@ describe('Email: Send Controller', () => {
         }
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new MissingParamError('from'))
   })
 
-  test('Should return 400 if no subject is provided', () => {
+  test('Should return 400 if no subject is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -95,12 +95,12 @@ describe('Email: Send Controller', () => {
         }
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new MissingParamError('subject'))
   })
 
-  test('Should return 400 if no fields is provided', () => {
+  test('Should return 400 if no fields is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -112,12 +112,12 @@ describe('Email: Send Controller', () => {
         type_body: 'success'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new MissingParamError('fields'))
   })
 
-  test('Should return 400 if no type_body is provided', () => {
+  test('Should return 400 if no type_body is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -132,11 +132,11 @@ describe('Email: Send Controller', () => {
         }
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new MissingParamError('type_body'))
   })
-  test('Should return 400 if an invalid receiver is provided', () => {
+  test('Should return 400 if an invalid receiver is provided', async () => {
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockReturnValueOnce(false)
     const httpRequest = {
@@ -153,12 +153,12 @@ describe('Email: Send Controller', () => {
         type_body: 'success'
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new InvalidParamError('to'))
   })
 
-  test('Should call EmailValidator with correct receiver', () => {
+  test('Should call EmailValidator with correct receiver', async () => {
     const { sut, emailValidatorStub } = makeSut()
     const isValidSpy = jest.spyOn(emailValidatorStub, 'isValid')
 
@@ -176,11 +176,11 @@ describe('Email: Send Controller', () => {
         type_body: 'success'
       }
     }
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
     expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body.to)
   })
 
-  test('Should return 500 if EmailValidator throws', () => {
+  test('Should return 500 if EmailValidator throws', async () => {
     const { sut, emailValidatorStub } = makeSut()
     jest.spyOn(emailValidatorStub, 'isValid').mockImplementationOnce(() => {
       throw new ServerError()
@@ -200,12 +200,12 @@ describe('Email: Send Controller', () => {
         type_body: 'success'
       }
     }
-    const httpReesponse = sut.handle(httpRequest)
+    const httpReesponse = await sut.handle(httpRequest)
     expect(httpReesponse.statusCode).toBe(500)
     expect(httpReesponse.body).toEqual(new ServerError())
   })
 
-  test('Should call SendEmail with correct values', () => {
+  test('Should call SendEmail with correct values', async () => {
     const { sut, sendEmailStub } = makeSut()
     const isValidSpy = jest.spyOn(sendEmailStub, 'send')
 
@@ -223,11 +223,11 @@ describe('Email: Send Controller', () => {
         type_body: 'success'
       }
     }
-    sut.handle(httpRequest)
+    await sut.handle(httpRequest)
     expect(isValidSpy).toHaveBeenCalledWith(httpRequest.body)
   })
 
-  test('Should return 500 if SendEmail throws', () => {
+  test('Should return 500 if SendEmail throws', async () => {
     const { sut, sendEmailStub } = makeSut()
     jest.spyOn(sendEmailStub, 'send').mockImplementationOnce(() => {
       throw new ServerError()
@@ -247,14 +247,14 @@ describe('Email: Send Controller', () => {
         type_body: 'success'
       }
     }
-    const httpReesponse = sut.handle(httpRequest)
+    const httpReesponse = await sut.handle(httpRequest)
     expect(httpReesponse.statusCode).toBe(500)
     expect(httpReesponse.body).toEqual(new ServerError())
   })
 
-  test('Should return 400 if SendEmail returns false', () => {
+  test('Should return 400 if SendEmail returns false', async () => {
     const { sut, sendEmailStub } = makeSut()
-    jest.spyOn(sendEmailStub, 'send').mockImplementationOnce(() => {
+    jest.spyOn(sendEmailStub, 'send').mockImplementationOnce(async () => {
       return false
     })
     const httpRequest = {
@@ -271,12 +271,12 @@ describe('Email: Send Controller', () => {
         }
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(400)
     expect(httpResponse.body.message).toEqual(new SendEmailError())
   })
 
-  test('Should return 200 if valid values is provided', () => {
+  test('Should return 200 if valid values is provided', async () => {
     const { sut } = makeSut()
     const httpRequest = {
       body: {
@@ -292,7 +292,7 @@ describe('Email: Send Controller', () => {
         }
       }
     }
-    const httpResponse = sut.handle(httpRequest)
+    const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(200)
     expect(httpResponse.body).toBe('Email Enviado com Sucesso')
   })

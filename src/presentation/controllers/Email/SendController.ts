@@ -10,7 +10,7 @@ export class SendController implements controller {
     private readonly sendEmail: SendEmail
   ) {}
 
-  handle (httpRequest: HttpRequest): HttpResponse {
+  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
       const requiredFields = ['to', 'from', 'subject', 'fields', 'type_body']
       for (const field of requiredFields) {
@@ -26,7 +26,7 @@ export class SendController implements controller {
         return badRequest(new InvalidParamError('to'))
       }
 
-      const isSendEmail = this.sendEmail.send({
+      const isSendEmail = await this.sendEmail.send({
         to,
         from,
         subject,

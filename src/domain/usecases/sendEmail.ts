@@ -8,5 +8,5 @@ export interface SendEmailModel {
 }
 
 export interface SendEmail {
-  send: (data: SendEmailModel) => boolean
+  send: (data: SendEmailModel) => Promise<boolean>
 }
